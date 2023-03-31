@@ -30,6 +30,11 @@ const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   }
 }))
 
+let role: string | null
+if (typeof window !== 'undefined') {
+  role = localStorage.getItem('role')
+}
+
 const TabName = styled('span')(({ theme }) => ({
   lineHeight: 1.71,
   fontSize: '0.875rem',
@@ -64,23 +69,12 @@ const AccountSettings = () => {
               </Box>
             }
           />
-          <Tab
-            value='security'
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <LockOpenOutline />
-                <TabName>Security</TabName>
-              </Box>
-            }
-          />
         </TabList>
 
         <TabPanel sx={{ p: 0 }} value='account'>
           <TabAccount />
         </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='security'>
-          <TabSecurity />
-        </TabPanel>
+
         <TabPanel sx={{ p: 0 }} value='info'></TabPanel>
       </TabContext>
     </Card>

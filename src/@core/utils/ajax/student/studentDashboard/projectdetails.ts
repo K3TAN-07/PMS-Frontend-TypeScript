@@ -20,6 +20,8 @@ export async function projectdetails() {
       return json
     }
   } catch (e) {
+    alert(e)
+
     return { success: false, message: e }
   }
 }
@@ -111,6 +113,8 @@ export async function createProject({
       return json
     }
   } catch (e) {
+    alert(e)
+
     return { success: false, message: e }
   }
 }
@@ -132,15 +136,19 @@ export async function joinProject({ inviteCode }: JoinProjectsProps) {
       }
     })
     const json = await response.json()
-    console.log(json)
-    if (json) {
+    if (json.status === `success`) {
+      console.log(json)
+
       return json
     } else {
       console.log(json)
+      console.log('join project')
 
       return json
     }
   } catch (e) {
+    alert(e)
+
     return { success: false, message: e }
   }
 }

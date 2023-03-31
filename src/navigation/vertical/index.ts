@@ -39,17 +39,17 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Project',
       icon: DeveloperBoardOutlinedIcon,
-      path: '/student/profile'
+      path: '/student/dashboard/project'
     },
     {
       title: 'Group',
       icon: PeopleOutlinedIcon,
-      path: '/student/profile'
+      path: '/student/dashboard/group'
     },
     {
       title: 'Submission',
       icon: CalendarViewDayOutlinedIcon,
-      path: '/student/profile'
+      path: '/student/dashboard/submission'
     }
   ]
 
@@ -97,17 +97,17 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Profile',
       icon: AccountBoxOutlinedIcon,
-      path: '/faculty/profile'
+      path: '/account-settings/'
     },
     {
       title: 'Groups',
       icon: PeopleOutlinedIcon,
-      path: '/faculty/profile'
+      path: '/faculty/dashboard/groups'
     },
     {
       title: 'Request',
       icon: BallotOutlinedIcon,
-      path: '/faculty/profile'
+      path: '/faculty/dashboard/request'
     }
   ]
 

@@ -7,18 +7,13 @@ import TextField from '@mui/material/TextField'
 import LinearProgress from '@mui/material/LinearProgress'
 import ReactiveButton from 'reactive-button'
 
-// ** Icon imports
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-
 //api calls
 import {
   createProject,
-  createProjectCall,
   fetchFacultyID,
   joinProject,
   projectdetails
-} from 'src/@core/utils/ajax/projectdetails'
+} from 'src/@core/utils/ajax/student/studentDashboard/projectdetails'
 
 function ProjectDetails() {
   const [userData, setUserData] = useState([])
@@ -44,26 +39,11 @@ function ProjectDetails() {
   const [isLoading, setIsLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [isProjectAssigned, setIsProjectAssigned] = useState(false)
-  const [pasteText, setPasteText] = useState('')
 
   let user_Email
   if (typeof window !== 'undefined') {
     // Perform localStorage action
     user_Email = localStorage.getItem('email')
-  }
-
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText()
-      setPasteText(text)
-      console.log('Pasted content: ', text)
-    } catch (error) {
-      console.error('Failed to read clipboard contents: ', error)
-    }
-  }
-
-  const handleClearText = () => {
-    setPasteText('')
   }
 
   const styles = {
@@ -154,9 +134,12 @@ function ProjectDetails() {
         faucltyID
       })
       console.log(data)
-      console.log('joined')
+      alert('project created')
+      fetchDetails()
     } catch (error) {
       console.error(error)
+      alert('project not created please try again')
+      fetchDetails()
     }
   }
 
@@ -169,6 +152,11 @@ function ProjectDetails() {
       const data = await joinProject({
         inviteCode
       })
+      if (data.msg === 'Invite code is invalid') {
+        alert('invalid invite code')
+      } else {
+        alert('joined')
+      }
       console.log(data)
       fetchDetails()
     } catch (error) {
@@ -220,7 +208,7 @@ function ProjectDetails() {
 
   return (
     <>
-      <Card sx={{ padding: 4 }}>
+      <Card sx={{ padding: 8 }}>
         {loading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -525,19 +513,10 @@ function ProjectDetails() {
         >
           <Box sx={styleInvite}>
             <div className='p-4'>
-              <div className='text-right p-2'>
-                <ContentPasteIcon onClick={handlePaste}></ContentPasteIcon>
-                <DeleteOutlineIcon onClick={handleClearText}></DeleteOutlineIcon>
-              </div>
+              <div className='text-right p-2'></div>
               <div className='p-4 font-bold'>Enter Invite Code</div>
               <div className='flex'>
-                <TextField
-                  required
-                  id='outlined-required'
-                  value={pasteText}
-                  onChange={handleInviteCode}
-                  className='p-4'
-                />
+                <TextField required id='outlined-required' onChange={handleInviteCode} className='p-4' />
                 <Box sx={{ padding: 2 }}>
                   <ReactiveButton
                     onClick={joinProjectCall}
