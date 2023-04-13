@@ -50,6 +50,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Submission',
       icon: CalendarViewDayOutlinedIcon,
       path: '/student/dashboard/submission'
+    },
+    {
+      title: 'KanBan',
+      icon: DeveloperBoardOutlinedIcon,
+      path: '/student/dashboard/kanban'
     }
   ]
 
