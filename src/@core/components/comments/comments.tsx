@@ -23,7 +23,9 @@ function comments() {
     // Perform localStorage action
     token = localStorage.getItem('token')
   }
-  const filteredComments = Array.isArray(comments) ? comments.filter(comment => comment.text !== '') : []
+  const filteredComments = Array.isArray(comments)
+    ? comments.filter((comment: { text?: string }) => comment.text !== '')
+    : []
 
   const handleShowMore = () => {
     setShowAll(true)
@@ -45,7 +47,7 @@ function comments() {
     }
   }
   useEffect(() => {
-    getProjectid(projectId)
+    getProjectid()
   }, [])
 
   //get all comments
