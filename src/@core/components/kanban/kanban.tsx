@@ -24,10 +24,12 @@ const columns = {
 const KanbanBoard = () => {
   const [tasks, setTasks] = useState(columns)
 
-  const handleOnDragEnd = (result: { destination: any; source?: any; draggableId?: any }) => {
+  const handleOnDragEnd = result => {
     if (!result.destination) return
 
     const { source, destination, draggableId } = result
+
+    // If the task is dropped in the same location, do nothing
     if (source.droppableId === destination.droppableId && source.index === destination.index) return
 
     const sourceColumn = tasks[source.droppableId]
@@ -35,6 +37,12 @@ const KanbanBoard = () => {
     const newSourceTasks = Array.from(sourceColumn.tasks)
     const newDestinationTasks = Array.from(destinationColumn.tasks)
     const [draggedTask] = newSourceTasks.splice(source.index, 1)
+
+    // Check if the task already exists in the destination column and insert it in the correct position
+    const existingTaskIndex = newDestinationTasks.findIndex(task => task.id === draggedTask.id)
+    if (existingTaskIndex > -1) {
+      newDestinationTasks.splice(existingTaskIndex, 1)
+    }
     newDestinationTasks.splice(destination.index, 0, draggedTask)
 
     const newTasks = {
