@@ -31,17 +31,23 @@ const FacultyTab = () => {
     {
       field: 'name',
       headerName: 'Name',
-      minWidth: 290
+      minWidth: 250
     },
     {
       field: 'email',
       headerName: 'Email',
-      minWidth: 280
+      minWidth: 250
     },
     {
       field: 'department',
       headerName: 'Department',
-      minWidth: 450,
+      minWidth: 250,
+      sortable: false
+    },
+    {
+      field: 'designation',
+      headerName: 'Designation',
+      minWidth: 250,
       sortable: false
     },
     {
@@ -81,6 +87,8 @@ const FacultyTab = () => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [designation, setDesignation] = useState('')
+
   const [department, setDepartment] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -117,7 +125,13 @@ const FacultyTab = () => {
     handleSubmit()
   }, [])
 
-  const handleUpdate = async (id: { selectedFacultyId: null; email: string; department: string; name: string }) => {
+  const handleUpdate = async (id: {
+    selectedFacultyId: null
+    email: string
+    department: string
+    name: string
+    designation: string
+  }) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/update-faculty/${id.selectedFacultyId}`,
@@ -126,7 +140,8 @@ const FacultyTab = () => {
           body: JSON.stringify({
             name: name,
             email: email,
-            department: department
+            department: department,
+            designation: designation
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -277,6 +292,12 @@ const FacultyTab = () => {
                         value={department}
                         onChange={e => setDepartment(e.target.value)}
                       />
+                      <label className='block mb-2  font-bold'>Designation</label>
+                      <input
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500'
+                        value={designation}
+                        onChange={e => setDesignation(e.target.value)}
+                      />
 
                       <div className='flex justify-end'>
                         <button
@@ -287,7 +308,7 @@ const FacultyTab = () => {
                         </button>
                         <button
                           className='px-4 py-2 bg-gray-200 font-bold text-black rounded-lg hover:bg-blue-600'
-                          onClick={() => handleUpdate({ selectedFacultyId, email, department, name })}
+                          onClick={() => handleUpdate({ selectedFacultyId, email, department, name, designation })}
                         >
                           Submit
                         </button>
