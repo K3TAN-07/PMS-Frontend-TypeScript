@@ -6,6 +6,9 @@ import Modal from '@mui/material/Modal'
 import TextField from '@mui/material/TextField'
 import LinearProgress from '@mui/material/LinearProgress'
 import ReactiveButton from 'reactive-button'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import stripTags from 'striptags'
 
 //api calls
 import {
@@ -14,6 +17,8 @@ import {
   joinProject,
   projectdetails
 } from 'src/@core/utils/ajax/student/studentDashboard/projectdetails'
+
+import RichTextEditor from 'src/@core/components/text-editor/textEditor'
 
 function ProjectDetails() {
   const [userData, setUserData] = useState([])
@@ -72,6 +77,19 @@ function ProjectDetails() {
     bgcolor: 'background.paper',
     border: '2px solid rgba(0, 0, 0, 0)',
     boxShadow: 24
+  }
+
+  const modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ header: [{ values: [1, 2, false], height: '32px' }] }],
+      [{ align: [] }],
+      ['link'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ indent: '-1' }, { indent: '+1' }],
+      [{ color: [] }, { background: [] }],
+      ['clean']
+    ]
   }
 
   //fetch faculty list
@@ -133,9 +151,12 @@ function ProjectDetails() {
         database,
         faucltyID
       })
-      console.log(data)
-      alert('project created')
-      fetchDetails()
+      if (data.ok) {
+        console.log(data)
+        alert('project created')
+        fetchDetails()
+        handleCloseCreateProModal()
+      }
     } catch (error) {
       console.error(error)
       alert('project not created please try again')
@@ -170,9 +191,6 @@ function ProjectDetails() {
   const handletitle = (event: { target: { value: React.SetStateAction<string> } }) => {
     setTitle(event.target.value)
   }
-  const handledescription = (event: { target: { value: React.SetStateAction<string> } }) => {
-    setDescription(event.target.value)
-  }
 
   const handleproject_type = (event: { target: { value: React.SetStateAction<string> } }) => {
     setProjectType(event.target.value)
@@ -206,6 +224,11 @@ function ProjectDetails() {
     console.log(selectedId)
   }
 
+  const handleDescriptionChange = (value: string) => {
+    const plainText = stripTags(value)
+    setDescription(plainText)
+  }
+
   return (
     <>
       <Card sx={{ padding: 8 }}>
@@ -228,11 +251,12 @@ function ProjectDetails() {
             <Card>
               <div className=' rounded-lg shadow-md  p-4 flex-grow text-left'>
                 <h1 className='font-bold text-xl mb-2 pb-2 text-left'>Project Details</h1>
-                Project not created yet
-                <br></br>
+
                 <br></br>
                 {userData.length === 0 ? (
                   <div className='text-left'>
+                    <div>Project Not Created Yet</div>
+                    <br></br>
                     <Box sx={{ display: 'flex' }}>
                       <Box sx={{ padding: 2 }}>
                         <ReactiveButton
@@ -258,6 +282,7 @@ function ProjectDetails() {
                         />
                       </Box>
                     </Box>
+                    <br></br>
                   </div>
                 ) : (
                   <div>
@@ -326,11 +351,16 @@ function ProjectDetails() {
                 <div className='p-4 '>
                   <div className='font-bold text-xl mb-2'>Group Members</div>
                   <div className=' font-semibold mb-2'>
-                    {userData.groupMembers.map((member, index) => (
-                      <div key={index}>
-                        {index + 1}. {member}
-                      </div>
-                    ))}
+                    {userData.groupMembers.map(
+                      (
+                        member: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined,
+                        index: React.Key | null | undefined
+                      ) => (
+                        <div key={index}>
+                          {index + 1}. {member}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </Card>
@@ -399,7 +429,7 @@ function ProjectDetails() {
                   <div>
                     <InputLabel>Description</InputLabel>
                     <FormControl fullWidth>
-                      <TextField required id='outlined-required' onChange={handledescription} multiline rows={4} />
+                      <ReactQuill value={description} onChange={handleDescriptionChange} modules={modules} />
                     </FormControl>
                   </div>
                   <br></br>
