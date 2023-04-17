@@ -261,26 +261,26 @@ const FacultyTab = () => {
                       <label className='block mb-2 text-gray-600'>{selectedFacultyId}</label>
                       <label className='block mb-2  font-bold'>Faculty Name</label>
                       <input
-                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300 bg-transparent  focus:outline-none focus:border-indigo-500'
                         value={name}
                         onChange={e => setName(e.target.value)}
                       />
                       <label className='block mb-2  font-bold'>Faculty Email</label>
                       <input
-                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300 bg-transparent  focus:outline-none focus:border-indigo-500'
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                       />
                       <label className='block mb-2  font-bold'>Faculty department</label>
                       <input
-                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500'
                         value={department}
                         onChange={e => setDepartment(e.target.value)}
                       />
 
                       <div className='flex justify-end'>
                         <button
-                          className='mr-2 px-4 py-2 bg-gray-200  font-bold rounded-lg hover:bg-gray-300'
+                          className='mr-2 px-4 py-2 bg-gray-200 font-bold text-black rounded-lg hover:bg-blue-600'
                           onClick={() => setIsEditOpen(false)}
                         >
                           Close
