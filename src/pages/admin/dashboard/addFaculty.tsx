@@ -17,6 +17,7 @@ function AddFacultyForm() {
     // Perform localStorage action
     bearerToken = localStorage.getItem('token')
   }
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/add-faculty`, {
@@ -34,8 +35,9 @@ function AddFacultyForm() {
       })
       const data = await response.json()
       console.log(data)
-      if (response.status == 200) {
-        toast.success('Faculty Added', {
+
+      if (response.ok) {
+        toast.success(response.json.message, {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -45,7 +47,7 @@ function AddFacultyForm() {
           progress: undefined
         })
       } else {
-        toast.error('Error Adding Faculty', {
+        toast.error('Error Adding Student', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,

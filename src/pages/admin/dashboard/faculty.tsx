@@ -71,12 +71,13 @@ const FacultyTab = () => {
       }
     }
   ]
-  const [selectedFacultyId, setSelectedFacultyId] = useState(null)
-  const [myArray, setMyArray] = useState([])
-  const [isEditOpen, setIsEditOpen] = useState(false)
+
   const handleClose = () => {
     setIsEditOpen(false)
   }
+  const [selectedFacultyId, setSelectedFacultyId] = useState('')
+  const [myArray, setMyArray] = useState([])
+  const [isEditOpen, setIsEditOpen] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [department, setDepartment] = useState('')
@@ -117,18 +118,21 @@ const FacultyTab = () => {
 
   const handleUpdate = async (id: { selectedFacultyId: null; email: string; department: string; name: string }) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/update-faculty/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          department: department
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/update-faculty/${id.selectedFacultyId}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            department: department
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
         }
-      })
+      )
       const data = await response.json()
       console.log(data)
       setIsEditOpen(false)
