@@ -1,15 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Card, Input } from '@mui/material'
-import { GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
+import { Box, Button, Modal, Card } from '@mui/material'
+
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
+
 import LinearProgress from '@mui/material/LinearProgress'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
-import ReactiveButton from 'reactive-button'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
-import { borderRadius } from '@mui/system'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const style = {
   position: 'absolute',
@@ -20,10 +16,8 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
-  borderRadius: 1
+  p: 4
 }
-
 function customToolBar() {
   return (
     <GridToolbarContainer>
@@ -36,24 +30,25 @@ const StudentTab = () => {
   const columns = [
     {
       field: 'name',
-      headerName: 'name',
-      minWidth: 150
+      headerName: 'Name',
+      minWidth: 250
     },
     {
       field: 'email',
-      headerName: 'email',
+      headerName: 'Email',
       minWidth: 250
     },
     {
       field: 'department',
-      headerName: 'department',
-      minWidth: 200,
+      headerName: 'Department',
+      minWidth: 250,
       sortable: false
     },
     {
       field: 'enrollment_number',
-      headerName: 'enrollment_number',
-      minWidth: 150
+      headerName: 'Enrollment Number',
+      minWidth: 250,
+      sortable: false
     },
     {
       field: 'actions',
@@ -74,7 +69,7 @@ const StudentTab = () => {
               onClick={() => handleDelete(params.row)}
               variant='contained'
               color='error'
-              style={{ height: 35, width: 100, margin: 5 }}
+              style={{ height: 35, width: 200, margin: 5 }}
             >
               Delete
             </Button>
@@ -83,6 +78,14 @@ const StudentTab = () => {
       }
     }
   ]
+
+  let token: string | null
+  if (typeof window !== 'undefined') {
+    // Perform localStorage action
+    token = localStorage.getItem('token')
+  }
+
+  //handle get faculty
   const [selectedStudentId, setSelectedStudentId] = useState(null)
   const [myArray, setMyArray] = useState([])
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -132,7 +135,7 @@ const StudentTab = () => {
         body: JSON.stringify({
           department: department,
           email: email,
-          enrollment_number: enrollmentNumber,
+          enrollment_number: enrollment_number,
           name: name
         }),
         headers: {
@@ -162,7 +165,7 @@ const StudentTab = () => {
   const handleDelete = async (id: any) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/delete-student/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/delete-student/${id._id}`,
 
         {
           method: 'DELETE',
@@ -196,129 +199,112 @@ const StudentTab = () => {
   }
 
   return (
-    <Card sx={{ padding: 8 }}>
-      {loading ? (
-        <Box sx={{ width: '100%' }}>
-          <br></br>
-          <div className='p-4'>
-            <LinearProgress />
-          </div>
-          <br></br>
-        </Box>
-      ) : (
-        <div className='min-h-1/2 flex-grow mx-2% shadow rounded-lg x  p-8'>
-          {isEditOpen && (
-            <div className='py-4'>
-              <div>
+    <div>
+      <Card sx={{ padding: 4 }}>
+        {loading ? (
+          <Box sx={{ width: '100%' }}>
+            <br></br>
+            <div className='p-4'>
+              <LinearProgress />
+            </div>
+            <br></br>
+          </Box>
+        ) : (
+          <>
+            <ToastContainer
+              position='top-right'
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+            {/* Same as */}
+            <ToastContainer />
+            <div className='min-h-1/2 flex-grow mx-2% shadow rounded-lg  p-4'>
+              {isEditOpen && (
                 <Modal
-                  open={open}
+                  open={isEditOpen}
                   onClose={handleClose}
                   aria-labelledby='modal-modal-title'
                   aria-describedby='modal-modal-description'
                 >
                   <Box sx={style}>
-                    <label className='block mb-2  font-bold'>Student Name</label>
-                    <Input
-                      className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
-                      value={name}
-                      onChange={e => setName(e.target.value)}
-                    />
-                    <label className='block mb-2  font-bold'>Student Email</label>
-                    <Input
-                      className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                    />
-                    <label className='block mb-2  font-bold'>Student department</label>
-                    <Input
-                      className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
-                      value={department}
-                      onChange={e => setDepartment(e.target.value)}
-                    />
-                    <label className='block mb-2  font-bold'>Student enrollment_number</label>
-                    <Input
-                      className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
-                      value={enrollmentNumber}
-                      onChange={e => setEnrollmentNumber(e.target.value)}
-                    />
-                    <div className='flex justify-end'>
-                      <ReactiveButton
-                        onClick={() => setIsEditOpen(false)}
-                        color='red'
-                        idleText='Close'
-                        loadingText='Loading'
-                        successText='Done'
-                        rounded={true}
-                        shadow
+                    <div className='py-4'>
+                      <label className='block mb-2  font-bold'>Faculty ID</label>
+                      <label className='block mb-2 text-gray-600'>{selectedStudentId}</label>
+                      <label className='block mb-2  font-bold'>Student Name</label>
+                      <input
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                      />
+                      <label className='block mb-2  font-bold'>Student Email</label>
+                      <input
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                      />
+                      <label className='block mb-2  font-bold'>Student department</label>
+                      <input
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        value={department}
+                        onChange={e => setDepartment(e.target.value)}
+                      />
+                      <label className='block mb-2  font-bold'>Student Enrolment Number</label>
+                      <input
+                        className='w-full mb-2 py-2 px-3 rounded border border-gray-300  focus:outline-none focus:border-indigo-500'
+                        value={enrollmentNumber}
+                        onChange={e => setEnrollmentNumber(e.target.value)}
                       />
 
-                      <ReactiveButton
-                        onClick={() => handleUpdate(selectedStudentId, email, department, enrollmentNumber, name)}
-                        color='violet'
-                        idleText='Submit'
-                        loadingText='Loading'
-                        successText='Done'
-                        rounded={true}
-                        shadow
-                      />
+                      <div className='flex justify-end'>
+                        <button
+                          className='mr-2 px-4 py-2 bg-gray-200  font-bold rounded-lg hover:bg-gray-300'
+                          onClick={() => setIsEditOpen(false)}
+                        >
+                          Close
+                        </button>
+                        <button
+                          className='px-4 py-2 bg-gray-200 font-bold text-black rounded-lg hover:bg-blue-600'
+                          onClick={() => handleUpdate(selectedStudentId, email, enrollmentNumber, department, name)}
+                        >
+                          Submit
+                        </button>
+                      </div>
                     </div>
                   </Box>
                 </Modal>
-              </div>
-            </div>
-          )}
-          {myArray.length > 0 && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Department</TableCell>
-                    <TableCell>Enrollment Number</TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {myArray.map(student => (
-                    <TableRow key={student._id}>
-                      <TableCell>{student.name}</TableCell>
-                      <TableCell>{student.email}</TableCell>
-                      <TableCell>{student.department}</TableCell>
-                      <TableCell>{student.enrollment_number}</TableCell>
-                      <TableCell>
-                        <div className='flex '>
-                          <ReactiveButton
-                            onClick={() => handleEdit(student)}
-                            color='violet'
-                            idleText='Edit'
-                            loadingText='Loading'
-                            successText='Done'
-                            rounded={true}
-                            shadow
-                          />
+              )}
+              {myArray.length > 0 && (
+                <div style={{ height: 450, width: 1300, left: 100, top: 100 }}>
+                  <DataGrid
+                    columns={columns}
+                    rows={myArray}
+                    getRowId={d => d._id}
+                    pageSize={5}
+                    disableSelectionOnClick
+                    checkboxSelection
+                    components={
+                      {
+                        Toolbar: customToolBar
+                      }
 
-                          <ReactiveButton
-                            onClick={() => handleDelete(student._id)}
-                            color='red'
-                            idleText='Delete'
-                            loadingText='Loading'
-                            successText='Done'
-                            rounded={true}
-                            shadow
-                          />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-          <br />
-        </div>
-      )}
-    </Card>
+                      // checkboxSelection
+                      // disableSelectionOnClick
+                    }
+                  />
+                </div>
+              )}
+              <br />
+            </div>
+          </>
+        )}
+      </Card>
+    </div>
   )
 }
 
