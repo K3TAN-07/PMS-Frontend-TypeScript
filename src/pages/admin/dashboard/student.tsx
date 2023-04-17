@@ -94,9 +94,6 @@ const StudentTab = () => {
   const [department, setDepartment] = useState('')
   const [enrollmentNumber, setEnrollmentNumber] = useState('')
   const [loading, setLoading] = useState(false)
-  const [open, setOpen] = React.useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
 
   const bearerToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null
 
@@ -160,6 +157,9 @@ const StudentTab = () => {
       console.error(error)
     }
   }
+  const handleClose = () => {
+    setIsEditOpen(false)
+  }
 
   //delete students
   const handleDelete = async (id: any) => {
@@ -195,7 +195,6 @@ const StudentTab = () => {
     setDepartment(student.department)
     setEnrollmentNumber(student.enrollment_number)
     setIsEditOpen(true)
-    handleOpen(true)
   }
 
   return (
