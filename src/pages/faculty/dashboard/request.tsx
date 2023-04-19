@@ -37,6 +37,8 @@ const Requests = () => {
     // Perform localStorage action
     token = localStorage.getItem('token')
   }
+
+  // get all requests
   const getAllRequests = async () => {
     setLoading(true)
     try {

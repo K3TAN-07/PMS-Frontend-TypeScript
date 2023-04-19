@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import LinearProgress from '@mui/material/LinearProgress'
 import * as React from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
 import { Card, Input } from '@mui/material'
 import ReactiveButton from 'reactive-button'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 
 export default function Groups() {
   const [groups, setGroups] = useState([])
@@ -22,6 +21,42 @@ export default function Groups() {
   const [showCommentBox, setCommentBox] = useState(false)
   const [showAll, setShowAll] = useState(false)
   const [studentTable, setStudentTable] = useState([])
+  const [selectedSemester, setSelectedSemester] = useState('All') // default to show all groups
+
+  const handleSemesterChange = event => {
+    setSelectedSemester(event.target.value)
+  }
+
+  const filteredGroups = Object.entries(groups)
+    .filter(([_, group]) => selectedSemester === 'All' || group.semester === selectedSemester)
+    .map(([key, group]) => (
+      <li key={key}>
+        {loading ? (
+          <></>
+        ) : (
+          <div>
+            <Card sx={{ padding: 4 }}>
+              <div
+                key={group._id}
+                className='text-black rounded-lg shadow-lg cursor-pointer p-4 hover:shadow-xl transition-all duration-300'
+                onClick={() => handleClick(group)}
+                style={{ marginBottom: '1rem', backgroundColor: '#e3f2fd' }}
+              >
+                <h2 className=' text-lg font-bold mb-2'>Group Name : {group.groupName}</h2>
+                <p className=' text-sm mb-1'>Group Title{group.title}</p>
+                <p className=' text-sm mb-1'>Group description : {group.description}</p>
+                <p className=' text-sm mb-1'>Group Leader : {group.leader.name}</p>
+                <hr />
+              </div>
+            </Card>
+          </div>
+        )}
+      </li>
+    ))
+
+  // Check if any groups were found for the selected semester
+  const noDataFound = filteredGroups.length === 0 && selectedSemester !== 'All'
+
   const maxComments = 3
   let token: string | null
   if (typeof window !== 'undefined') {
@@ -212,6 +247,45 @@ export default function Groups() {
 
   return (
     <>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+        <FormControl sx={{ minWidth: 120, mr: 2 }}>
+          <InputLabel id='semester-select-label'>Select a semester:</InputLabel>
+          <Select
+            labelId='semester-select-label'
+            id='semester-select'
+            value={selectedSemester}
+            onChange={handleSemesterChange}
+            label='Select a semester'
+          >
+            <MenuItem value='All'>All</MenuItem>
+            <MenuItem value='Semester6'>Semester 6</MenuItem>
+            <MenuItem value='Semester7'>Semester 7</MenuItem>
+            <MenuItem value='Semester8'>Semester 8</MenuItem>
+            {/* add more options as needed */}
+          </Select>
+        </FormControl>
+        {/* add your other components here */}
+      </Box>
+      <br></br>
+
+      <div>
+        {noDataFound ? (
+          <>
+            {toast.warning(' No Group for Selected Semester', {
+              position: 'top-right',
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined
+            })}
+          </>
+        ) : (
+          <ul>{filteredGroups}</ul>
+        )}
+      </div>
+      <br></br>
       <ToastContainer
         position='top-right'
         autoClose={5000}
@@ -225,233 +299,210 @@ export default function Groups() {
       />
       {/* Same as */}
       <ToastContainer />
-      <Card sx={{ padding: 4 }}>
-        {loading ? (
-          <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
-        ) : (
-          <>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 '>
-              <>
-                {groups.length === 0 ? (
-                  <div>No Groups Yet</div>
-                ) : (
-                  <>
-                    {groups.map(group => (
-                      <div
-                        key={group._id}
-                        className='text-black rounded-lg shadow-lg cursor-pointer p-4 hover:shadow-xl transition-all duration-300'
-                        onClick={() => handleClick(group)}
-                        style={{ marginBottom: '1rem', backgroundColor: '#e3f2fd' }}
-                      >
-                        <h2 className=' text-lg font-bold mb-2'>Group Name : {group.groupName}</h2>
-                        <p className=' text-sm mb-1'>Group Title{group.title}</p>
 
-                        <p className=' text-sm mb-1'>Group description : {group.description}</p>
-                        <p className=' text-sm mb-1'>Group Leader : {group.leader.name}</p>
-                        <hr></hr>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </>
-              <div>
-                <Modal
-                  open={selectedGroup}
-                  onClose={handleClose}
-                  aria-labelledby='modal-modal-title'
-                  aria-describedby='modal-modal-description'
-                >
-                  <Box sx={style}>
-                    {selectedGroup && (
-                      <>
-                        <Card className='p-4 rounded-lg shadow-lg'>
-                          <p className=' font-bold text-lg mb-1'>{selectedGroup.groupName}</p>
-                          <p className=' text-md mb-1'>Title : {selectedGroup.title}</p>
-                          <p className=' text-md mb-4'>Description : {selectedGroup.description}</p>
-                          <p className=' text-md mb-4'>Backend Technologies : {selectedGroup.backendTechnologies}</p>
-                          <p className=' text-md mb-4'>Frontend Technologies : {selectedGroup.frontendTechnologies}</p>
-                          <p className=' text-md mb-4'>Database : {selectedGroup.database}</p>
-                          <p className=' text-md mb-4'>Leader : {selectedGroup.leader.name}</p>
-                          <p className=' text-md mb-4'>Project type : {selectedGroup.project_type}</p>
-                          <p className=' text-md mb-4'>Semester : {selectedGroup.semester}</p>
-                          {selectedGroup.project_type === 'UDP (User Defined Project)' ? (
-                            <></>
+      <>
+        {loading ? (
+          <>
+            <LinearProgress />
+          </>
+        ) : (
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 '>
+            <>{groups.length === 0 ? <div>No Groups Yet</div> : <></>}</>
+            <div>
+              <Modal
+                open={selectedGroup}
+                onClose={handleClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <Box sx={style}>
+                  {selectedGroup && (
+                    <>
+                      <Card className='p-4 rounded-lg shadow-lg'>
+                        <p className=' font-bold text-lg mb-1'>{selectedGroup.groupName}</p>
+                        <p className=' text-md mb-1'>Title : {selectedGroup.title}</p>
+                        <p className=' text-md mb-4'>Description : {selectedGroup.description}</p>
+                        <p className=' text-md mb-4'>Backend Technologies : {selectedGroup.backendTechnologies}</p>
+                        <p className=' text-md mb-4'>Frontend Technologies : {selectedGroup.frontendTechnologies}</p>
+                        <p className=' text-md mb-4'>Database : {selectedGroup.database}</p>
+                        <p className=' text-md mb-4'>Leader : {selectedGroup.leader.name}</p>
+                        <p className=' text-md mb-4'>Project type : {selectedGroup.project_type}</p>
+                        <p className=' text-md mb-4'>Semester : {selectedGroup.semester}</p>
+                        {selectedGroup.project_type === 'UDP (User Defined Project)' ? (
+                          <></>
+                        ) : (
+                          <>
+                            <p className=' text-md mb-4'>Company : {selectedGroup.company}</p>
+                            <p className=' text-md mb-4'>Company Email : {selectedGroup.company_email}</p>
+                          </>
+                        )}
+
+                        <p className=' text-md mb-4'>
+                          Project Status :<p className='text-red-500'>{selectedGroup.status}</p>
+                        </p>
+
+                        <p className=' text-md mb-4'>
+                          Invite Code :<p className='text-red-500'>{selectedGroup.invite_code}</p>
+                        </p>
+                      </Card>
+                      <br></br>
+
+                      <div>
+                        <div>
+                          {showCommentBox ? (
+                            <div className='comment-section'>
+                              <br></br>
+                              {filteredComments.length === 0 ? (
+                                <Div>{'No comments yet : '}</Div>
+                              ) : (
+                                <div
+                                  className=' rounded-lg shadow-xl p-4'
+                                  style={{
+                                    height: '300px',
+                                    overflow: 'auto'
+                                  }}
+                                >
+                                  <br></br>
+                                  <Div>{'All Comments : '}</Div>
+                                  {filteredComments
+                                    .slice(0, showAll ? filteredComments.length : maxComments)
+                                    .map(comment => (
+                                      <div key={comment._id} className='my-4'>
+                                        <p className='font-bold'>{comment.text}</p>
+                                        <div className='flex justify-between items-center mt-4'>
+                                          <p className='text-sm  text-red-500 italic '>{comment.name}</p>
+                                          <p className='text-sm '>{new Date(comment.date).toLocaleString()}</p>
+                                          {comment.email === localStorage.getItem('email') && (
+                                            <ReactiveButton
+                                              onClick={() => handleCommentDelete(comment._id)}
+                                              color='red'
+                                              idleText='Delete'
+                                              loadingText='Loading'
+                                              successText='Done'
+                                              rounded={true}
+                                              shadow
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                </div>
+                              )}
+                              <br></br>
+                              <div className='text-right'>
+                                {!showAll && filteredComments.length > maxComments && (
+                                  <>
+                                    <ReactiveButton
+                                      onClick={handleShowMore}
+                                      color='violet'
+                                      idleText=' Show More'
+                                      loadingText='Loading'
+                                      successText='Done'
+                                      rounded={true}
+                                      shadow
+                                    />
+                                  </>
+                                )}
+
+                                <ReactiveButton
+                                  onClick={handleCloseCommentBox}
+                                  color='green'
+                                  idleText=' Close'
+                                  loadingText='Loading'
+                                  successText='Done'
+                                  rounded={true}
+                                  shadow
+                                />
+                              </div>
+                            </div>
                           ) : (
                             <>
-                              <p className=' text-md mb-4'>Company : {selectedGroup.company}</p>
-                              <p className=' text-md mb-4'>Company Email : {selectedGroup.company_email}</p>
+                              <div className='p-4 text-right'>
+                                <ReactiveButton
+                                  onClick={getAllComments}
+                                  color='violet'
+                                  idleText=' Show Comments'
+                                  loadingText='Loading'
+                                  successText='Done'
+                                  rounded={true}
+                                  shadow
+                                />
+                                <br></br>
+                              </div>
                             </>
                           )}
-
-                          <p className=' text-md mb-4'>
-                            Project Status :<p className='text-red-500'>{selectedGroup.status}</p>
-                          </p>
-
-                          <p className=' text-md mb-4'>
-                            Invite Code :<p className='text-red-500'>{selectedGroup.invite_code}</p>
-                          </p>
-                        </Card>
-                        <br></br>
-
-                        <div>
-                          <div>
-                            {showCommentBox ? (
-                              <div className='comment-section'>
-                                <br></br>
-                                {filteredComments.length === 0 ? (
-                                  <Div>{'No comments yet : '}</Div>
-                                ) : (
-                                  <div
-                                    className=' rounded-lg shadow-xl p-4'
-                                    style={{
-                                      height: '300px',
-                                      overflow: 'auto'
-                                    }}
-                                  >
-                                    <br></br>
-                                    <Div>{'All Comments : '}</Div>
-                                    {filteredComments
-                                      .slice(0, showAll ? filteredComments.length : maxComments)
-                                      .map(comment => (
-                                        <div key={comment._id} className='my-4'>
-                                          <p className='font-bold'>{comment.text}</p>
-                                          <div className='flex justify-between items-center mt-4'>
-                                            <p className='text-sm  text-red-500 italic '>{comment.name}</p>
-                                            <p className='text-sm '>{new Date(comment.date).toLocaleString()}</p>
-                                            {comment.email === localStorage.getItem('email') && (
-                                              <ReactiveButton
-                                                onClick={() => handleCommentDelete(comment._id)}
-                                                color='red'
-                                                idleText='Delete'
-                                                loadingText='Loading'
-                                                successText='Done'
-                                                rounded={true}
-                                                shadow
-                                              />
-                                            )}
-                                          </div>
-                                        </div>
-                                      ))}
-                                  </div>
-                                )}
-                                <br></br>
-                                <div className='text-right'>
-                                  {!showAll && filteredComments.length > maxComments && (
-                                    <>
-                                      <ReactiveButton
-                                        onClick={handleShowMore}
-                                        color='violet'
-                                        idleText=' Show More'
-                                        loadingText='Loading'
-                                        successText='Done'
-                                        rounded={true}
-                                        shadow
-                                      />
-                                    </>
-                                  )}
-
-                                  <ReactiveButton
-                                    onClick={handleCloseCommentBox}
-                                    color='green'
-                                    idleText=' Close'
-                                    loadingText='Loading'
-                                    successText='Done'
-                                    rounded={true}
-                                    shadow
-                                  />
-                                </div>
-                              </div>
-                            ) : (
-                              <>
-                                <div className='p-4 text-right'>
-                                  <ReactiveButton
-                                    onClick={getAllComments}
-                                    color='violet'
-                                    idleText=' Show Comments'
-                                    loadingText='Loading'
-                                    successText='Done'
-                                    rounded={true}
-                                    shadow
-                                  />
-                                  <br></br>
-                                </div>
-                              </>
-                            )}
-                          </div>
                         </div>
-                        <br></br>
-                        {/* {selectedGroup.leader.name === studentTable.email && ( */}
-                        <table className='table-auto w-full rounded-lg shadow-xl '>
-                          <thead>
-                            <tr>
-                              <th className='px-4 py-2'>Name</th>
-                              <th className='px-4 py-2'>Email</th>
-                              <th className='px-4 py-2'>Action</th>
+                      </div>
+                      <br></br>
+                      {/* {selectedGroup.leader.name === studentTable.email && ( */}
+                      <table className='table-auto w-full rounded-lg shadow-xl '>
+                        <thead>
+                          <tr>
+                            <th className='px-4 py-2'>Name</th>
+                            <th className='px-4 py-2'>Email</th>
+                            <th className='px-4 py-2'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {studentTable.map(student => (
+                            <tr key={student.id}>
+                              <td className='border px-4 py-2'>{student.name}</td>
+                              <td className='border px-4 py-2'>{student.email}</td>
+                              <td className='border px-4 py-2'>
+                                <ReactiveButton
+                                  onClick={deleteMember}
+                                  color='red'
+                                  idleText=' Delete'
+                                  loadingText='Loading'
+                                  successText='Done'
+                                  rounded={true}
+                                  shadow
+                                />
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {studentTable.map(student => (
-                              <tr key={student.id}>
-                                <td className='border px-4 py-2'>{student.name}</td>
-                                <td className='border px-4 py-2'>{student.email}</td>
-                                <td className='border px-4 py-2'>
-                                  <ReactiveButton
-                                    onClick={deleteMember}
-                                    color='red'
-                                    idleText=' Delete'
-                                    loadingText='Loading'
-                                    successText='Done'
-                                    rounded={true}
-                                    shadow
-                                  />
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        {/* )} */}
-                        <br></br>
-                        <br></br>
-                        <div className=' rounded-lg shadow-xl '>
-                          <label htmlFor='message' className='block font-medium mb-2 p-4'>
-                            Enter your message:
-                          </label>
-                          <div className='p-4'>
-                            <Input
-                              placeholder='Enter your Comments'
-                              id='message'
-                              name='message'
-                              className='border border-gray-300 rounded-md p-4 w-full h-32 mb-4'
-                              onChange={event => setCommentText(event.target.value)}
-                            ></Input>
-                          </div>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* )} */}
+                      <br></br>
+                      <br></br>
+                      <div className=' rounded-lg shadow-xl '>
+                        <label htmlFor='message' className='block font-medium mb-2 p-4'>
+                          Enter your message:
+                        </label>
+                        <div className='p-4'>
+                          <Input
+                            placeholder='Enter your Comments'
+                            id='message'
+                            name='message'
+                            className='border border-gray-300 rounded-md p-4 w-full h-32 mb-4'
+                            onChange={event => setCommentText(event.target.value)}
+                          ></Input>
+                        </div>
 
-                          <div className='p-4'>
-                            <div className='text-right'>
-                              <ReactiveButton
-                                onClick={handleComment}
-                                color='violet'
-                                idleText=' Send'
-                                loadingText='Loading'
-                                successText='Done'
-                                rounded={true}
-                                shadow
-                              />
-                            </div>
+                        <div className='p-4'>
+                          <div className='text-right'>
+                            <ReactiveButton
+                              onClick={handleComment}
+                              color='violet'
+                              idleText=' Send'
+                              loadingText='Loading'
+                              successText='Done'
+                              rounded={true}
+                              shadow
+                            />
                           </div>
                         </div>
-                        <br></br>
-                      </>
-                    )}
-                  </Box>
-                </Modal>
-              </div>
+                      </div>
+                      <br></br>
+                    </>
+                  )}
+                </Box>
+              </Modal>
             </div>
-          </>
+          </div>
         )}
-      </Card>
+      </>
     </>
   )
 }
