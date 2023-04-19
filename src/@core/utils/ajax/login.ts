@@ -15,7 +15,7 @@ export async function login({ email, password }: Props) {
       }
     })
     const json = await response.json()
-    console.log('-----------------------------------------------------')
+
     console.log(response)
     if (json.token) {
       localStorage.setItem('token', json.token)

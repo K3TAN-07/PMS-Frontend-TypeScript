@@ -7,6 +7,8 @@ import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
 import { Card, Input } from '@mui/material'
 import ReactiveButton from 'reactive-button'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function Groups() {
   const [groups, setGroups] = useState([])
@@ -106,9 +108,27 @@ export default function Groups() {
       const data = await response.json()
       console.log(data)
       getAllComments()
+      toast.success('Comment  Added Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.log('Success')
     } catch (error) {
       getAllComments()
+      toast.error('Error While Sending Comment', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
@@ -151,12 +171,32 @@ export default function Groups() {
       const data = await response.json()
       console.log(data)
       getAllComments()
+      toast.success('Comment  Deleted Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
     } catch (error) {
       getAllComments()
+      toast.error('Error While Deleting Comment', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
   const filteredComments = Array.isArray(comments) ? comments.filter(comment => comment.text !== '') : []
+
+  // delete member not completed yet
   const deleteMember = (id: React.SetStateAction<string>) => {
     console.log(id)
     setProjectId(id)
@@ -172,6 +212,19 @@ export default function Groups() {
 
   return (
     <>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
       <Card sx={{ padding: 4 }}>
         {loading ? (
           <Box sx={{ width: '100%' }}>

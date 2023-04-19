@@ -5,6 +5,8 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import { Card, Input } from '@mui/material'
 import ReactiveButton from 'reactive-button'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const style = {
   position: 'absolute',
@@ -60,6 +62,7 @@ const Requests = () => {
     getAllRequests()
   }, [])
 
+  // handle reject
   const handleReject = async (id: string) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/reject/${id}`, {
@@ -74,13 +77,32 @@ const Requests = () => {
       })
       const data = await response.json()
       console.log(data)
+      toast.success('Rejected Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       setShowRejectPopup(false)
       setInputValue('')
     } catch (error) {
+      toast.error('Error ', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
 
+  // handle approve
   const handleApproved = async (id: string) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/approve/${id}`, {
@@ -95,9 +117,27 @@ const Requests = () => {
       })
       const data = await response.json()
       console.log(data)
+      toast.success('Successfully Approved ', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       setShowPopup(false)
       setInputValue('')
     } catch (error) {
+      toast.error('Error ', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
@@ -121,99 +161,114 @@ const Requests = () => {
   }
 
   return (
-    <Card sx={{ padding: 4 }}>
-      {loading ? (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {requestData && requestData.length > 0 ? (
-            requestData.map(request => (
-              <div key={request.projectId} className='mb-4'>
-                <Cards
-                  title={request.title}
-                  description={request.description}
-                  onClick={() => handleCardClick(request.projectId)}
-                />
-              </div>
-            ))
-          ) : (
-            <p className='text-red-500'>There are no requests to show</p>
-          )}
-          {showPopup && selectedRequestId && (
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby='modal-modal-title'
-              aria-describedby='modal-modal-description'
-            >
-              <Box sx={style}>
-                {' '}
-                <div>
-                  <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-                    <h3 className='text-lg leading-6 font-medium ' id='modal-headline'>
-                      Comment
-                    </h3>
-                    <div className='mt-2'>
-                      <div className='mt-4 flex justify-end'>
-                        <div className='mr-4'>
-                          <ReactiveButton
-                            onClick={() => handleApproved(projectId)}
-                            color='violet'
-                            idleText='Approve project'
-                            loadingText='Loading'
-                            successText='Done'
-                            rounded={true}
-                            shadow
-                          />
-                        </div>
-
-                        <ReactiveButton
-                          onClick={() => setStatus('reject')}
-                          color='red'
-                          idleText='Reject project'
-                          loadingText='Loading'
-                          successText='Done'
-                          rounded={true}
-                          shadow
-                        />
-                      </div>
-                      {status === 'reject' && (
-                        <div className='mt-4 '>
-                          <div className='pt-8'>
-                            <Input
-                              type='text'
-                              className='border border-gray-300 rounded-md w-full px-3 py-2'
-                              placeholder='Reason for rejection'
-                              value={inputValue}
-                              onChange={handleInputChange}
-                              required
-                            />
-                          </div>
-                          <div className='text-right p-4 '>
+    <>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
+      <Card sx={{ padding: 4 }}>
+        {loading ? (
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {requestData && requestData.length > 0 ? (
+              requestData.map(request => (
+                <div key={request.projectId} className='mb-4'>
+                  <Cards
+                    title={request.title}
+                    description={request.description}
+                    onClick={() => handleCardClick(request.projectId)}
+                  />
+                </div>
+              ))
+            ) : (
+              <p className='text-red-500'>There are no requests to show</p>
+            )}
+            {showPopup && selectedRequestId && (
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <Box sx={style}>
+                  {' '}
+                  <div>
+                    <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+                      <h3 className='text-lg leading-6 font-medium ' id='modal-headline'>
+                        Comment
+                      </h3>
+                      <div className='mt-2'>
+                        <div className='mt-4 flex justify-end'>
+                          <div className='mr-4'>
                             <ReactiveButton
-                              onClick={() => handleReject(projectId)}
+                              onClick={() => handleApproved(projectId)}
                               color='violet'
-                              idleText='Reject '
+                              idleText='Approve project'
                               loadingText='Loading'
                               successText='Done'
                               rounded={true}
                               shadow
                             />
                           </div>
+
+                          <ReactiveButton
+                            onClick={() => setStatus('reject')}
+                            color='red'
+                            idleText='Reject project'
+                            loadingText='Loading'
+                            successText='Done'
+                            rounded={true}
+                            shadow
+                          />
                         </div>
-                      )}
+                        {status === 'reject' && (
+                          <div className='mt-4 '>
+                            <div className='pt-8'>
+                              <Input
+                                type='text'
+                                className='border border-gray-300 rounded-md w-full px-3 py-2'
+                                placeholder='Reason for rejection'
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                required
+                              />
+                            </div>
+                            <div className='text-right p-4 '>
+                              <ReactiveButton
+                                onClick={() => handleReject(projectId)}
+                                color='violet'
+                                idleText='Reject '
+                                loadingText='Loading'
+                                successText='Done'
+                                rounded={true}
+                                shadow
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Box>
-            </Modal>
-          )}
-        </div>
-      )}
-      <div></div>
-    </Card>
+                </Box>
+              </Modal>
+            )}
+          </div>
+        )}
+        <div></div>
+      </Card>
+    </>
   )
 }
 

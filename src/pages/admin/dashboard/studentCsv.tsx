@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
 import { Card } from '@mui/material'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function StudentCsv() {
   const [csvData, setCsvData] = useState([])
@@ -29,6 +31,27 @@ function StudentCsv() {
       })
       const data = await response.json()
       console.log('Success:', data)
+      if (response.status == 200) {
+        toast.success('CSV Added Successfully', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {
+        toast.error('Error While Added CSV', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
       setResponseData(data) // set the data received from the server to the state variable
     } catch (error) {
       console.error('Error:', error)
@@ -37,6 +60,19 @@ function StudentCsv() {
 
   return (
     <Card sx={{ padding: 20 }}>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
       <div>Add Student CSV </div>
       {loading ? (
         <Box sx={{ width: '100%' }}>

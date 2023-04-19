@@ -2,7 +2,8 @@ import { Card, Input } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import Comments from '../../../@core/components/comments/comments'
 import ReactiveButton from 'reactive-button'
-
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -11,7 +12,6 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import LinearProgress from '@mui/material/LinearProgress'
 import { getProjectDetails } from 'src/@core/utils/ajax/student/studentComments/project'
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 
 interface MyObject {
   title: string
@@ -68,23 +68,34 @@ function StudentProject() {
           'Content-Type': 'application/json'
         }
       })
-
-      if (!response.ok) {
-        throw new Error(`Failed to update project. Status: ${response.status}`)
-      }
-      if (response.ok) {
+      if (response.status == 200) {
+        toast.success('Project Updated Successfully', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
         setOpen(false)
         fetchDetails()
-        alert('Project updated successfully')
         console.log('updated')
+      } else {
+        toast.error('Error While Updating Project', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+        throw new Error(`Failed to update project. Status: ${response.status}`)
       }
-
-      // Handle successful response
     } catch (error) {
       alert('Project update failed' + error)
       console.error(error)
-
-      // Handle error
     }
   }
 
@@ -422,29 +433,24 @@ function StudentProject() {
           </Dialog>
 
           <br></br>
-          {/* {Response && (
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 p-4">
-          <h2 className="font-bold text-lg mb-4 text-red-500">
-            {Response.length > 0 ? Response : "No Data Found"}:
-          </h2>
-          <p className="mb-4">
-            Title: {Response.title ? Response.title : "Not present"}
-          </p>
-          <p className="mb-4">
-            Description:{" "}
-            {Response.description ? Response.description : "Not present"}
-          </p>
-          <p className="mb-4">
-            Students:
-            {Response && <div>No data</div>}
-          </p>
-        </div>
-      )} */}
-          {userData.length === 0 ? <></> : <Comments />}
 
-          {/* <Chat /> */}
+          {userData.length === 0 ? <></> : <Comments />}
         </div>
       )}
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
+      {/* Same as */}
+      <ToastContainer />
     </Card>
   )
 }

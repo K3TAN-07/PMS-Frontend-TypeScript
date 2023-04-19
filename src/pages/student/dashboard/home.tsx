@@ -457,8 +457,8 @@ function ProjectDetails() {
                   <FormControl fullWidth>
                     <Select onChange={handleproject_type}>
                       <InputLabel id='demo-simple-select-label'>Select a Poject</InputLabel>
-                      <MenuItem value='IDP (Industry Defined Project)'>IDP</MenuItem>
-                      <MenuItem value='UDP (User Defined Project)'>UDP</MenuItem>
+                      <MenuItem value='IDP (Industry Defined Project)'>IDP (Industry Defined Project)</MenuItem>
+                      <MenuItem value='UDP (User Defined Project)'>UDP (User Defined Project)</MenuItem>
                     </Select>
                   </FormControl>
                   {projectType === 'IDP (Industry Defined Project)' && (

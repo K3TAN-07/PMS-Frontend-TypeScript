@@ -1,6 +1,5 @@
 import { Avatar, Box, Button, Card, Container, CssBaseline, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
-import LinearProgress from '@mui/material/LinearProgress'
 
 import { toast, ToastContainer } from 'react-toastify'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
@@ -18,7 +17,8 @@ function AddFacultyForm() {
     bearerToken = localStorage.getItem('token')
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async e => {
+    e.preventDefault()
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/add-faculty`, {
         method: 'POST',
@@ -36,8 +36,8 @@ function AddFacultyForm() {
       const data = await response.json()
       console.log(data)
 
-      if (response.ok) {
-        toast.success(response.json.message, {
+      if (data.status == 200) {
+        toast.success('Faculty Added Successfully', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -47,7 +47,7 @@ function AddFacultyForm() {
           progress: undefined
         })
       } else {
-        toast.error('Error Adding Student', {
+        toast.error('Error While Adding Faculty', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -71,18 +71,18 @@ function AddFacultyForm() {
 
   return (
     <Card sx={{ padding: 8 }}>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div>
-        <ToastContainer
-          position='top-right'
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         {/* Same as */}
         <ToastContainer />
         <Container component='main' maxWidth='xs' className='contain2'>

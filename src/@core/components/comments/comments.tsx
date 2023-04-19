@@ -9,6 +9,8 @@ import {
   getProjectId,
   sendComment
 } from 'src/@core/utils/ajax/student/studentComments/comments'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function comments() {
   const [comments, setComments] = useState([]) // replace [...] with your initial comments array
@@ -71,10 +73,28 @@ function comments() {
       console.log(commentId)
       const data = await deleteComment({ commentId, projectId })
       console.log(data)
-      alert('Comment Deleted')
       handleSubmit()
+      toast.success('Comment Deleted Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
     } catch (error) {
       handleSubmit()
+      toast.error('Error While Deleteing Comment', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+
       console.error(error)
     }
   }
@@ -85,10 +105,26 @@ function comments() {
       setCommentBox(true)
       const data = await sendComment({ projectId, commentText })
       console.log(data)
+      toast.success('Comment added Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       handleSubmit()
-      alert('Comment Added')
-      console.log('Success')
     } catch (error) {
+      toast.error('Error While adding Comment', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       handleSubmit()
       console.error(error)
     }
@@ -106,6 +142,19 @@ function comments() {
   // handleCloseCommentBox
   return (
     <>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
       <div>
         {showCommentBox ? (
           <div className='comment-section'>
@@ -196,9 +245,7 @@ function comments() {
           </>
         )}
       </div>
-
       <br></br>
-
       {/**Write a Comment  */}
       <div className=' rounded-lg shadow-2xl  '>
         <label htmlFor='message' className='block font-medium  mb-2 p-4'>

@@ -150,7 +150,25 @@ const StudentTab = () => {
         setMyArray(data.students)
       }
       if (response.status == 200) {
+        toast.success('Student Updated', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
       } else {
+        toast.error('Error in Update', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
       }
       handleSubmit()
     } catch (error) {
@@ -181,7 +199,25 @@ const StudentTab = () => {
         setMyArray(data.students)
       }
       if (response.status == 200) {
+        toast.success('Student Deleted', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
       } else {
+        toast.error('Error in Update', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
       }
       handleSubmit()
     } catch (error) {
@@ -199,6 +235,19 @@ const StudentTab = () => {
 
   return (
     <div>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
       <Card sx={{ padding: 4 }}>
         {loading ? (
           <Box sx={{ width: '100%' }}>
@@ -210,19 +259,6 @@ const StudentTab = () => {
           </Box>
         ) : (
           <>
-            <ToastContainer
-              position='top-right'
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-            {/* Same as */}
-            <ToastContainer />
             <div className='min-h-1/2 flex-grow mx-2% shadow rounded-lg  p-4'>
               {isEditOpen && (
                 <Modal

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
-import { Button, Card } from '@mui/material'
+import { Card } from '@mui/material'
 import ReactiveButton from 'reactive-button'
 import { deleteMember, getGroups } from 'src/@core/utils/ajax/student/studentGroups/group'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function Group() {
   const [userData, setUserData] = useState([])
@@ -40,8 +42,25 @@ function Group() {
     try {
       const data = await deleteMember({ memberId })
       console.log(data)
-      alert('member deleted')
+      toast.success('Member Deleted Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
     } catch (error) {
+      toast.error('Error While Deleteing Member', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
@@ -85,6 +104,19 @@ function Group() {
           })}
         </div>
       )}
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
     </Card>
   )
 }

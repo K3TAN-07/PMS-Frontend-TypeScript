@@ -1,10 +1,8 @@
 import { Avatar, Box, Button, Card, Container, CssBaseline, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
-import LinearProgress from '@mui/material/LinearProgress'
 
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
@@ -21,11 +19,12 @@ function AddStudentForm() {
     bearerToken = localStorage.getItem('token')
   }
 
-  const handleDepartmentChange = event => {
+  const handleDepartmentChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setDepartment(event.target.value)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/add-student`, {
         method: 'POST',
@@ -43,8 +42,8 @@ function AddStudentForm() {
       const data = await response.json()
       console.log(data)
 
-      if (response.ok) {
-        toast.success(response.json.message, {
+      if (data.status == 200) {
+        toast.success('Student Added Successfully', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -54,7 +53,7 @@ function AddStudentForm() {
           progress: undefined
         })
       } else {
-        toast.error('Error Adding Student', {
+        toast.error('Error While Adding Student', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -74,20 +73,20 @@ function AddStudentForm() {
 
   return (
     <Card sx={{ padding: 8 }}>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
       <div className='justify-center'>
-        <ToastContainer
-          position='top-right'
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        {/* Same as */}
-        <ToastContainer />
         <Container component='main' maxWidth='xs' className='contain2'>
           <CssBaseline />
           <Box
@@ -165,15 +164,7 @@ function AddStudentForm() {
                 autoFocus
                 onChange={event => setEnrollmentNumber(event.target.value)}
               />
-              {/* <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="password"
-                            label="password"
-                            name="password"
-                            autoFocus  
-                        /> */}
+
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                 Add Student
               </Button>

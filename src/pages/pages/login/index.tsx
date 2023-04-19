@@ -22,6 +22,10 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import { Button, CardContent, TextField, Typography } from '@mui/material'
 
+// toastify
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
@@ -54,6 +58,17 @@ const LoginPage = () => {
     e.preventDefault()
     const result = await login({ email, password })
     const response = result
+    if (result.success === true) {
+      toast.success('Login Successfull', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    }
     if (response.message === 'Please change your password by calling /api/users/change-password') {
       router.push('/changePassword')
     } else if (result.success) {
@@ -61,12 +76,35 @@ const LoginPage = () => {
       console.log(result.message.role)
     } else {
       // setError(result.message)
+      toast.error(result.error, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.log(result)
     }
   }
 
   return (
     <Box className='content-center'>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
+      {/* Same as */}
+      <ToastContainer />
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(8, 7, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

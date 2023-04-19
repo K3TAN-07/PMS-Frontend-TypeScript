@@ -7,6 +7,8 @@ import {
   updateSubmissionLink,
   uploadSubmissionLinks
 } from 'src/@core/utils/ajax/student/studentSubmission/submission'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function index() {
   const [submission, setSubmission] = useState([])
@@ -54,8 +56,26 @@ function index() {
   const uploadLinks = async () => {
     try {
       const data = await uploadSubmissionLinks({ uploadPresentationlink, uploadRepositorylink, uploadReportlink })
+      toast.success('Link Uploaded Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.log(data)
     } catch (error) {
+      toast.error('Error While Uploading Links', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
@@ -64,170 +84,128 @@ function index() {
   const updateLinks = async () => {
     try {
       const data = await updateSubmissionLink({ updatePresentationlink, updateRepositorylink, updateReportlink })
+      toast.success('Link Updated Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.log(data)
     } catch (error) {
+      toast.error('Error While Updating Links', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
       console.error(error)
     }
   }
 
   return (
-    <Card sx={{ padding: 8 }}>
-      {/* GET Submission view */}
-      <div className=' rounded-lg shadow-md p-4'>
-        <h1 className='text-2xl font-bold mb-4'>Submission Links:</h1>
+    <>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {/* Same as */}
+      <ToastContainer />
+      <Card sx={{ padding: 8 }}>
+        {/* GET Submission view */}
+        <div className=' rounded-lg shadow-md p-4'>
+          <h1 className='text-2xl font-bold mb-4'>Submission Links:</h1>
 
-        <div className='flex flex-wrap justify-center'>
-          <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
-            <h1 className='text-xl font-bold mb-4'>Repository Link:</h1>
-            <ul>
-              <li>
-                <a className='text-blue-600 hover:text-blue-800'>
-                  {submission.repository_link ? submission.repository_link : 'N/A'}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
-            <h1 className='text-xl font-bold mb-4'>Report Link:</h1>
-            <ul>
-              <li>
-                <a className='text-blue-600 hover:text-blue-800'>
-                  {submission.report_link ? submission.report_link : 'N/A'}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
-            <h1 className='text-xl font-bold mb-4'>Presentation Link:</h1>
-            <ul>
-              <li>
-                <a className='text-blue-600 hover:text-blue-800'>
-                  {submission.presentation_link ? submission.presentation_link : 'N/A'}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div>
-          {submission.presentation_link === '' ? (
-            <>
-              {showButton ? (
-                <ReactiveButton
-                  onClick={handleClick}
-                  color='violet'
-                  idleText='Close'
-                  loadingText='Loading'
-                  successText='Done'
-                  rounded={true}
-                  type='submit'
-                  shadow
-                />
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-      </div>
-
-      {/* upload Links  */}
-      <br></br>
-
-      {showUploadLink ? (
-        <></>
-      ) : (
-        <div className=' rounded-lg shadow-md p-4 pl-10 pr-10'>
-          <h1 className='text-xl font-bold mb-4'>Upload Links:</h1>
-          <div className='mb-4'>
-            <label className='block  font-bold mb-2' htmlFor='repository-link'>
-              Repository Link:
-            </label>
-
-            <Input
-              className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
-              id='presentation-link'
-              type='text'
-              placeholder={submission.repository_link}
-              onChange={e => setUploadRepositorylink(e.target.value)}
-              required
-            />
-          </div>
-          <div className='mb-4'>
-            <label className='block  font-bold mb-2' htmlFor='presentation-link'>
-              Presentation Link:
-            </label>
-            <Input
-              className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
-              id='presentation-link'
-              type='text'
-              placeholder={submission.presentation_link}
-              onChange={e => setUploadPresentationlink(e.target.value)}
-              required
-            />
-          </div>
-          <div className='mb-4'>
-            <label className='block  font-bold mb-2' htmlFor='report-link'>
-              Report Link:
-            </label>
-            <Input
-              className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
-              id='report-link'
-              type='text'
-              placeholder={submission.report_link}
-              onChange={e => setUploadReportlink(e.target.value)}
-              required
-            />
-          </div>
-          <div className='text-right flex'>
-            <div className='p-2'>
-              <ReactiveButton
-                onClick={uploadLinks}
-                color='violet'
-                idleText='Submit'
-                loadingText='Loading'
-                successText='Done'
-                rounded={true}
-                shadow
-              />
+          <div className='flex flex-wrap justify-center'>
+            <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
+              <h1 className='text-xl font-bold mb-4'>Repository Link:</h1>
+              <ul>
+                <li>
+                  <a className='text-blue-600 hover:text-blue-800'>
+                    {submission.repository_link ? submission.repository_link : 'N/A'}
+                  </a>
+                </li>
+              </ul>
             </div>
 
-            <div className='p-2'>
-              <ReactiveButton
-                onClick={handleClose}
-                color='violet'
-                idleText='Close'
-                loadingText='Loading'
-                successText='Done'
-                rounded={true}
-                shadow
-              />
+            <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
+              <h1 className='text-xl font-bold mb-4'>Report Link:</h1>
+              <ul>
+                <li>
+                  <a className='text-blue-600 hover:text-blue-800'>
+                    {submission.report_link ? submission.report_link : 'N/A'}
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className=' rounded-lg shadow-md p-4 mr-4 mb-4'>
+              <h1 className='text-xl font-bold mb-4'>Presentation Link:</h1>
+              <ul>
+                <li>
+                  <a className='text-blue-600 hover:text-blue-800'>
+                    {submission.presentation_link ? submission.presentation_link : 'N/A'}
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
+
+          <div>
+            {submission.presentation_link === '' ? (
+              <>
+                {showButton ? (
+                  <ReactiveButton
+                    onClick={handleClick}
+                    color='violet'
+                    idleText='Close'
+                    loadingText='Loading'
+                    successText='Done'
+                    rounded={true}
+                    type='submit'
+                    shadow
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
-      )}
 
-      <br></br>
+        {/* upload Links  */}
+        <br></br>
 
-      {/* Update Links  */}
-      {submission.presentation_link !== '' ? (
-        <>
+        {showUploadLink ? (
+          <></>
+        ) : (
           <div className=' rounded-lg shadow-md p-4 pl-10 pr-10'>
-            <h1 className='text-xl font-bold mb-4'>Update Links:</h1>
+            <h1 className='text-xl font-bold mb-4'>Upload Links:</h1>
             <div className='mb-4'>
               <label className='block  font-bold mb-2' htmlFor='repository-link'>
                 Repository Link:
               </label>
+
               <Input
                 className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
-                id='repository-link'
+                id='presentation-link'
                 type='text'
                 placeholder={submission.repository_link}
-                onChange={e => setUpdateRepositorylink(e.target.value)}
+                onChange={e => setUploadRepositorylink(e.target.value)}
                 required
               />
             </div>
@@ -240,7 +218,7 @@ function index() {
                 id='presentation-link'
                 type='text'
                 placeholder={submission.presentation_link}
-                onChange={e => setUpdatePresentationlink(e.target.value)}
+                onChange={e => setUploadPresentationlink(e.target.value)}
                 required
               />
             </div>
@@ -253,27 +231,102 @@ function index() {
                 id='report-link'
                 type='text'
                 placeholder={submission.report_link}
-                onChange={e => setUpdateReportlink(e.target.value)}
+                onChange={e => setUploadReportlink(e.target.value)}
                 required
               />
             </div>
-            <div className='text-right'>
-              <ReactiveButton
-                onClick={updateLinks}
-                color='violet'
-                idleText='Submit'
-                loadingText='Loading'
-                successText='Done'
-                rounded={true}
-                shadow
-              />
+            <div className='text-right flex'>
+              <div className='p-2'>
+                <ReactiveButton
+                  onClick={uploadLinks}
+                  color='violet'
+                  idleText='Submit'
+                  loadingText='Loading'
+                  successText='Done'
+                  rounded={true}
+                  shadow
+                />
+              </div>
+
+              <div className='p-2'>
+                <ReactiveButton
+                  onClick={handleClose}
+                  color='violet'
+                  idleText='Close'
+                  loadingText='Loading'
+                  successText='Done'
+                  rounded={true}
+                  shadow
+                />
+              </div>
             </div>
           </div>
-        </>
-      ) : (
-        <></>
-      )}
-    </Card>
+        )}
+
+        <br></br>
+
+        {/* Update Links  */}
+        {submission.presentation_link !== '' ? (
+          <>
+            <div className=' rounded-lg shadow-md p-4 pl-10 pr-10'>
+              <h1 className='text-xl font-bold mb-4'>Update Links:</h1>
+              <div className='mb-4'>
+                <label className='block  font-bold mb-2' htmlFor='repository-link'>
+                  Repository Link:
+                </label>
+                <Input
+                  className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
+                  id='repository-link'
+                  type='text'
+                  placeholder={submission.repository_link}
+                  onChange={e => setUpdateRepositorylink(e.target.value)}
+                  required
+                />
+              </div>
+              <div className='mb-4'>
+                <label className='block  font-bold mb-2' htmlFor='presentation-link'>
+                  Presentation Link:
+                </label>
+                <Input
+                  className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
+                  id='presentation-link'
+                  type='text'
+                  placeholder={submission.presentation_link}
+                  onChange={e => setUpdatePresentationlink(e.target.value)}
+                  required
+                />
+              </div>
+              <div className='mb-4'>
+                <label className='block  font-bold mb-2' htmlFor='report-link'>
+                  Report Link:
+                </label>
+                <Input
+                  className='appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline'
+                  id='report-link'
+                  type='text'
+                  placeholder={submission.report_link}
+                  onChange={e => setUpdateReportlink(e.target.value)}
+                  required
+                />
+              </div>
+              <div className='text-right'>
+                <ReactiveButton
+                  onClick={updateLinks}
+                  color='violet'
+                  idleText='Submit'
+                  loadingText='Loading'
+                  successText='Done'
+                  rounded={true}
+                  shadow
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </Card>
+    </>
   )
 }
 
