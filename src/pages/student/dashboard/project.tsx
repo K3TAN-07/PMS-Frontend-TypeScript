@@ -12,6 +12,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import LinearProgress from '@mui/material/LinearProgress'
 import { getProjectDetails } from 'src/@core/utils/ajax/student/studentComments/project'
+import { deleteProject } from 'src/@core/utils/ajax/student/studentDashboard/projectdetails'
 
 interface MyObject {
   title: string
@@ -96,6 +97,36 @@ function StudentProject() {
     } catch (error) {
       alert('Project update failed' + error)
       console.error(error)
+    }
+  }
+
+  //delete project
+  async function handleDelete(projectId: any) {
+    console.log(projectId)
+
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (json.token) {
+        console.log(json)
+
+        return json
+      } else {
+        console.log(json)
+
+        return json
+      }
+    } catch (e) {
+      alert(e)
+
+      return { success: false, message: e }
     }
   }
 
@@ -184,16 +215,28 @@ function StudentProject() {
                   )}
                   <div className='text-right'>
                     {user_Id === leaderEmail && (
-                      <ReactiveButton
-                        onClick={handleClickOpen}
-                        color='viloet'
-                        idleText='Update Project'
-                        loadingText='Loading'
-                        successText='Done'
-                        rounded={true}
-                        shadow
-                        type='submit'
-                      />
+                      <>
+                        <ReactiveButton
+                          onClick={handleClickOpen}
+                          color='viloet'
+                          idleText='Update Project'
+                          loadingText='Loading'
+                          successText='Done'
+                          rounded={true}
+                          shadow
+                          type='submit'
+                        />
+                        <ReactiveButton
+                          onClick={() => handleDelete(projectId)}
+                          color='red'
+                          idleText='Delete Project'
+                          loadingText='Loading'
+                          successText='Done'
+                          rounded={true}
+                          shadow
+                          type='submit'
+                        />
+                      </>
                     )}
                   </div>
                 </div>
