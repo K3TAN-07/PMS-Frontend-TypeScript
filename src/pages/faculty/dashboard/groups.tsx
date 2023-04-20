@@ -3,11 +3,12 @@ import LinearProgress from '@mui/material/LinearProgress'
 import * as React from 'react'
 import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
-import { Card, Input } from '@mui/material'
+import { Button, Card, Input } from '@mui/material'
 import ReactiveButton from 'reactive-button'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import StudentProject from 'src/pages/student/dashboard/project'
 
 export default function Groups() {
   const [groups, setGroups] = useState([])
@@ -21,13 +22,14 @@ export default function Groups() {
   const [showCommentBox, setCommentBox] = useState(false)
   const [showAll, setShowAll] = useState(false)
   const [studentTable, setStudentTable] = useState([])
-  const [selectedSemester, setSelectedSemester] = useState('All') // default to show all groups
-
-  const handleSemesterChange = event => {
+  const [selectedSemester, setSelectedSemester] = useState(localStorage.getItem('selectedSemester')) // default to show all groups
+  const [checkData, setCheckData] = useState(false)
+  const handleSemesterChange = (event: { target: { value: React.SetStateAction<string | null> } }) => {
     setSelectedSemester(event.target.value)
   }
 
   const filteredGroups = Object.entries(groups)
+
     .filter(([_, group]) => selectedSemester === 'All' || group.semester === selectedSemester)
     .map(([key, group]) => (
       <li key={key}>
@@ -117,6 +119,7 @@ export default function Groups() {
     // console.log(group._id);
     setStudentTable(group.students)
     console.log(studentTable)
+    console.log('clicked')
   }
   const handleShowMore = () => {
     setShowAll(true)
@@ -231,11 +234,46 @@ export default function Groups() {
   }
   const filteredComments = Array.isArray(comments) ? comments.filter(comment => comment.text !== '') : []
 
-  // delete member not completed yet
-  const deleteMember = (id: React.SetStateAction<string>) => {
-    console.log(id)
-    setProjectId(id)
+  //handle delete member
+  const handleDeleteMember = async (studentId: any) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/faculty/removeStudentFromGroup${projectId}/${studentId}/`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+      getAllComments()
+      toast.success('Member  Deleted Successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    } catch (error) {
+      getAllComments()
+      toast.error('Error While Deleting Member', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+      console.error(error)
+    }
   }
+
   const Div = styled('div')(({ theme }) => ({
     ...theme.typography.button,
     backgroundColor: theme.palette.background.paper,
@@ -269,7 +307,7 @@ export default function Groups() {
       <br></br>
 
       <div>
-        {noDataFound ? (
+        {noDataFound && groups.length ? (
           <>
             {toast.warning(' No Group for Selected Semester', {
               position: 'top-right',
@@ -435,7 +473,7 @@ export default function Groups() {
                       </div>
                       <br></br>
                       {/* {selectedGroup.leader.name === studentTable.email && ( */}
-                      <table className='table-auto w-full rounded-lg shadow-xl '>
+                      <table className='table-auto w-full rounded-lg shadow-xl'>
                         <thead>
                           <tr>
                             <th className='px-4 py-2'>Name</th>
@@ -450,9 +488,9 @@ export default function Groups() {
                               <td className='border px-4 py-2'>{student.email}</td>
                               <td className='border px-4 py-2'>
                                 <ReactiveButton
-                                  onClick={deleteMember}
+                                  onClick={() => handleDeleteMember(student.id)}
                                   color='red'
-                                  idleText=' Delete'
+                                  idleText='Delete'
                                   loadingText='Loading'
                                   successText='Done'
                                   rounded={true}
@@ -463,6 +501,7 @@ export default function Groups() {
                           ))}
                         </tbody>
                       </table>
+
                       {/* )} */}
                       <br></br>
                       <br></br>
