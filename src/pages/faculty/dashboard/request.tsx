@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import Cards from '../../../@core/components/Cards'
+import { Cards } from 'antd'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
-import { Card, Input } from '@mui/material'
+import { Card, Input, Typography } from '@mui/material'
 import ReactiveButton from 'reactive-button'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -53,6 +53,7 @@ const Requests = () => {
       console.log(data)
       const requestArray = Object.keys(data).map(key => data[key])
       setRequestData(requestArray)
+
       setLoading(false)
     } catch (error) {
       console.error(error)
@@ -148,6 +149,7 @@ const Requests = () => {
     setSelectedRequestId(id)
     setShowPopup(true)
     setProjectId(id)
+
     handleOpen(true)
   }
 
@@ -177,7 +179,7 @@ const Requests = () => {
       />
       {/* Same as */}
       <ToastContainer />
-      <Card sx={{ padding: 4 }}>
+      <Card sx={{ padding: 8 }}>
         {loading ? (
           <Box sx={{ width: '100%' }}>
             <LinearProgress />
@@ -187,11 +189,23 @@ const Requests = () => {
             {requestData && requestData.length > 0 ? (
               requestData.map(request => (
                 <div key={request.projectId} className='mb-4'>
-                  <Cards
-                    title={request.title}
-                    description={request.description}
+                  <Card
                     onClick={() => handleCardClick(request.projectId)}
-                  />
+                    style={{
+                      width: `${request.project.length * 35}px`,
+                      height: `${request.leaderName.length * 20}px`
+                    }}
+                  >
+                    <div className='p-8'>
+                      <Typography>Project : {request.project}</Typography>
+                      <Typography>Description : {request.description}</Typography>
+                      <Typography>Database: {request.database}</Typography>
+                      <Typography>Backend Technologies: {request.backendTechnologies}</Typography>
+                      <Typography>Frontend Technologies: {request.frontendTechnologies}</Typography>
+                      <Typography>Leader Name: {request.leaderName}</Typography>
+                      <Typography>Leader Name: {request.projectType}</Typography>
+                    </div>
+                  </Card>
                 </div>
               ))
             ) : (
@@ -205,12 +219,12 @@ const Requests = () => {
                 aria-describedby='modal-modal-description'
               >
                 <Box sx={style}>
-                  {' '}
                   <div>
                     <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
                       <h3 className='text-lg leading-6 font-medium ' id='modal-headline'>
                         Comment
                       </h3>
+                      <Box></Box>
                       <div className='mt-2'>
                         <div className='mt-4 flex justify-end'>
                           <div className='mr-4'>

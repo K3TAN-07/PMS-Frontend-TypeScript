@@ -338,7 +338,7 @@ export default function Groups() {
       {/* Same as */}
       <ToastContainer />
 
-      <>
+      <Card sx={{ padding: 8 }}>
         {loading ? (
           <>
             <LinearProgress />
@@ -541,7 +541,7 @@ export default function Groups() {
             </div>
           </div>
         )}
-      </>
+      </Card>
     </>
   )
 }
