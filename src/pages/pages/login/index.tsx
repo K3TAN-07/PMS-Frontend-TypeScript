@@ -73,7 +73,7 @@ const LoginPage = () => {
       router.push('/changePassword')
     } else if (result.success) {
       roleBasedLogin(result.message.role)
-      console.log(result.message.role)
+      localStorage.setItem('name', result.message.name)
     } else {
       // setError(result.message)
       toast.error(result.error, {

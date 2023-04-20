@@ -3,12 +3,11 @@ import LinearProgress from '@mui/material/LinearProgress'
 import * as React from 'react'
 import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
-import { Button, Card, Input } from '@mui/material'
+import { Card, Input } from '@mui/material'
 import ReactiveButton from 'reactive-button'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import StudentProject from 'src/pages/student/dashboard/project'
 
 export default function Groups() {
   const [groups, setGroups] = useState([])
@@ -23,7 +22,6 @@ export default function Groups() {
   const [showAll, setShowAll] = useState(false)
   const [studentTable, setStudentTable] = useState([])
   const [selectedSemester, setSelectedSemester] = useState(localStorage.getItem('selectedSemester')) // default to show all groups
-  const [checkData, setCheckData] = useState(false)
   const handleSemesterChange = (event: { target: { value: React.SetStateAction<string | null> } }) => {
     setSelectedSemester(event.target.value)
   }
@@ -129,6 +127,7 @@ export default function Groups() {
 
   // send comment
   const handleComment = async () => {
+    console.log(commentText)
     try {
       console.log(projectId)
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/comment/${projectId}`, {
@@ -144,6 +143,7 @@ export default function Groups() {
       const data = await response.json()
       console.log(data)
       getAllComments()
+      setCommentText('')
       toast.success('Comment  Added Successfully', {
         position: 'top-right',
         autoClose: 1000,
@@ -508,13 +508,13 @@ export default function Groups() {
                           Enter your message:
                         </label>
                         <div className='p-4'>
-                          <Input
+                          <input
                             placeholder='Enter your Comments'
                             id='message'
                             name='message'
                             className='border border-gray-300 rounded-md p-4 w-full h-32 mb-4'
                             onChange={event => setCommentText(event.target.value)}
-                          ></Input>
+                          ></input>
                         </div>
 
                         <div className='p-4'>

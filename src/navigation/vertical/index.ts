@@ -14,17 +14,21 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   let role
   if (typeof window !== 'undefined') {
-    // Perform localStorage action
     role = localStorage.getItem('role')
+  }
+
+  let AssinedProject
+  if (typeof window !== 'undefined') {
+    AssinedProject = localStorage.getItem('projectIsAssigned')
   }
 
   let token
   if (typeof window !== 'undefined') {
-    // Perform localStorage action
     token = localStorage.getItem('token')
   }
 
   // ** Student Items
+
   const studentItems = [
     {
       title: 'Dashboard',
@@ -35,28 +39,35 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Profile',
       icon: AccountBoxOutlinedIcon,
       path: '/account-settings/'
-    },
-    {
-      title: 'Project',
-      icon: DeveloperBoardOutlinedIcon,
-      path: '/student/dashboard/project'
-    },
-    {
-      title: 'Group',
-      icon: PeopleOutlinedIcon,
-      path: '/student/dashboard/group'
-    },
-    {
-      title: 'Submission',
-      icon: CalendarViewDayOutlinedIcon,
-      path: '/student/dashboard/submission'
-    },
-    {
-      title: 'KanBan',
-      icon: DeveloperBoardOutlinedIcon,
-      path: '/student/dashboard/kanban'
     }
   ]
+
+  if (AssinedProject === 'yes') {
+    studentItems.push(
+      {
+        title: 'Project',
+        icon: DeveloperBoardOutlinedIcon,
+        path: '/student/dashboard/project'
+      },
+      {
+        title: 'Group',
+        icon: PeopleOutlinedIcon,
+        path: '/student/dashboard/group'
+      },
+      {
+        title: 'Submission',
+        icon: CalendarViewDayOutlinedIcon,
+        path: '/student/dashboard/submission'
+      },
+      {
+        title: 'KanBan',
+        icon: DeveloperBoardOutlinedIcon,
+        path: '/student/dashboard/kanban'
+      }
+    )
+  } else {
+    studentItems.length = 2 // remove all but the first two tabs
+  }
 
   //admin items
   const adminItems = [

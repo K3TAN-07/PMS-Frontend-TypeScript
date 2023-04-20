@@ -8,6 +8,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import ReactiveButton from 'reactive-button'
 import { Editor } from '@tinymce/tinymce-react'
 import { toast, ToastContainer } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 //api calls
 import {
@@ -42,7 +43,7 @@ function ProjectDetails() {
   const [loading, setLoading] = useState(false)
   const [isProjectAssigned, setIsProjectAssigned] = useState(false)
   const [editorContent, setEditorContent] = useState('')
-
+  const router = useRouter()
   let user_Email
   if (typeof window !== 'undefined') {
     // Perform localStorage action
@@ -145,11 +146,13 @@ function ProjectDetails() {
         fetchDetails()
         handleCloseCreateProModal()
         setOpenCreateModal(false)
+        location.reload()
       }
       handleCloseCreateProModal()
       setOpenCreateModal(false)
       fetchDetails()
       alert('project created')
+      location.reload()
     } catch (error) {
       console.error(error)
       alert('project not created please try again')
