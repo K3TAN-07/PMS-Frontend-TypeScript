@@ -1,6 +1,7 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Card } from '@mui/material'
+import { Button, Card } from '@mui/material'
+import { getKanban } from 'src/@core/utils/ajax/student/kanban/kanban'
 
 const columns = {
   requested: {
@@ -13,16 +14,22 @@ const columns = {
     title: 'In Progress',
     tasks: []
   },
+  inReview: {
+    id: 'inReview',
+    title: 'In Review',
+    tasks: []
+  },
 
-  done: {
-    id: 'done',
-    title: 'Done',
+  completed: {
+    id: 'completed',
+    title: 'Completed',
     tasks: []
   }
 }
 
 const KanbanBoard = () => {
   const [tasks, setTasks] = useState(columns)
+  const [boardData, setBoardData] = useState(columns)
 
   const handleOnDragEnd = result => {
     if (!result.destination) return
@@ -66,14 +73,16 @@ const KanbanBoard = () => {
     )
     if (isDuplicateTask) {
       alert('Task already exists in another column')
+
       return
     }
 
     // check if task exists in requested, inProgress or done columns
-    const isTaskInOtherColumns = ['requested', 'inProgress', 'done']
+    const isTaskInOtherColumns = ['requested', 'inProgress', 'inReview', 'completed']
       .filter(id => id !== columnId)
       .some(id => {
         const column = tasks[id]
+
         return column.tasks.some((task: { content: any }) => task.content === newTaskContent)
       })
     if (isTaskInOtherColumns) {
@@ -95,9 +104,41 @@ const KanbanBoard = () => {
     const newTasks = { ...tasks, [columnId]: { ...column, tasks: filteredTasks } }
     setTasks(newTasks)
   }
+  const fetchKanban = async () => {
+    try {
+      const data = await getKanban()
+      console.log(data)
+      setBoardData(prevBoardData => ({
+        ...prevBoardData,
+        name: data.name,
+        description: data.description,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt
+      }))
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchKanban()
+  }, [])
+
+  if (!boardData) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Card sx={{ padding: 8 }}>
+      <Button onClick={fetchKanban}>get List </Button>
+      <div>
+        <div className='card'>
+          <h2>{boardData.name}</h2>
+          <p>{boardData.description}</p>
+          <p>Created At: {boardData.createdAt}</p>
+          <p>Updated At: {boardData.updatedAt}</p>
+        </div>
+      </div>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <div className='flex justify-center pt-8'>
           {Object.values(tasks).map(column => (
