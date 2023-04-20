@@ -37,20 +37,18 @@ export default function Groups() {
           <></>
         ) : (
           <div>
-            <Card sx={{ padding: 4 }}>
-              <div
-                key={group._id}
-                className='text-black rounded-lg shadow-lg cursor-pointer p-4 hover:shadow-xl transition-all duration-300'
-                onClick={() => handleClick(group)}
-                style={{ marginBottom: '1rem', backgroundColor: '#e3f2fd' }}
-              >
-                <h2 className=' text-lg font-bold mb-2'>Group Name : {group.groupName}</h2>
-                <p className=' text-sm mb-1'>Group Title{group.title}</p>
-                <p className=' text-sm mb-1'>Group description : {group.description}</p>
-                <p className=' text-sm mb-1'>Group Leader : {group.leader.name}</p>
-                <hr />
-              </div>
-            </Card>
+            <div
+              key={group._id}
+              className='text-black rounded-lg shadow-lg cursor-pointer p-4 hover:shadow-xl transition-all duration-300'
+              onClick={() => handleClick(group)}
+              style={{ marginBottom: '1rem', backgroundColor: '#e3f2fd' }}
+            >
+              <h2 className=' text-lg font-bold mb-2'>Group Name : {group.groupName}</h2>
+              <p className=' text-sm mb-1'>Group Title{group.title}</p>
+              <p className=' text-sm mb-1'>Group description : {group.description}</p>
+              <p className=' text-sm mb-1'>Group Leader : {group.leader.name}</p>
+              <hr />
+            </div>
           </div>
         )}
       </li>
@@ -284,7 +282,7 @@ export default function Groups() {
   }))
 
   return (
-    <>
+    <Card sx={{ padding: 4 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <FormControl sx={{ minWidth: 120, mr: 2 }}>
           <InputLabel id='semester-select-label'>Select a semester:</InputLabel>
@@ -338,7 +336,7 @@ export default function Groups() {
       {/* Same as */}
       <ToastContainer />
 
-      <Card sx={{ padding: 8 }}>
+      <>
         {loading ? (
           <>
             <LinearProgress />
@@ -541,7 +539,7 @@ export default function Groups() {
             </div>
           </div>
         )}
-      </Card>
-    </>
+      </>
+    </Card>
   )
 }
