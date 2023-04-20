@@ -6,9 +6,8 @@ import Modal from '@mui/material/Modal'
 import TextField from '@mui/material/TextField'
 import LinearProgress from '@mui/material/LinearProgress'
 import ReactiveButton from 'reactive-button'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
-import stripTags from 'striptags'
+import { Editor } from '@tinymce/tinymce-react'
+import { toast, ToastContainer } from 'react-toastify'
 
 //api calls
 import {
@@ -17,8 +16,6 @@ import {
   joinProject,
   projectdetails
 } from 'src/@core/utils/ajax/student/studentDashboard/projectdetails'
-
-import RichTextEditor from 'src/@core/components/text-editor/textEditor'
 
 function ProjectDetails() {
   const [userData, setUserData] = useState([])
@@ -44,6 +41,7 @@ function ProjectDetails() {
   const [isLoading, setIsLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [isProjectAssigned, setIsProjectAssigned] = useState(false)
+  const [editorContent, setEditorContent] = useState('')
 
   let user_Email
   if (typeof window !== 'undefined') {
@@ -77,19 +75,6 @@ function ProjectDetails() {
     bgcolor: 'background.paper',
     border: '2px solid rgba(0, 0, 0, 0)',
     boxShadow: 24
-  }
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline'],
-      [{ header: [{ values: [1, 2, false], height: '32px' }] }],
-      [{ align: [] }],
-      ['link'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ indent: '-1' }, { indent: '+1' }],
-      [{ color: [] }, { background: [] }],
-      ['clean']
-    ]
   }
 
   //fetch faculty list
@@ -137,6 +122,9 @@ function ProjectDetails() {
 
   //create project
   const createProjectCall = async () => {
+    handleCloseCreateProModal()
+    setOpenCreateModal(false)
+
     try {
       const data = await createProject({
         semester,
@@ -151,12 +139,17 @@ function ProjectDetails() {
         database,
         faucltyID
       })
-      if (data.ok) {
+      if (data.status === 200) {
         console.log(data)
-        alert('project created')
+        console.log('project created')
         fetchDetails()
         handleCloseCreateProModal()
+        setOpenCreateModal(false)
       }
+      handleCloseCreateProModal()
+      setOpenCreateModal(false)
+      fetchDetails()
+      alert('project created')
     } catch (error) {
       console.error(error)
       alert('project not created please try again')
@@ -224,8 +217,9 @@ function ProjectDetails() {
     console.log(selectedId)
   }
 
-  const handleDescriptionChange = (value: string) => {
-    const plainText = stripTags(value)
+  const handleEditorChange = (content, editor) => {
+    const plainText = content.replace(/(<([^>]+)>)/gi, '')
+    setEditorContent(content)
     setDescription(plainText)
   }
 
@@ -428,9 +422,27 @@ function ProjectDetails() {
                   <br></br>
                   <div>
                     <InputLabel>Description</InputLabel>
-                    <FormControl fullWidth>
-                      <ReactQuill value={description} onChange={handleDescriptionChange} modules={modules} />
-                    </FormControl>
+                    <>
+                      <Editor
+                        value={editorContent}
+                        onEditorChange={handleEditorChange}
+                        init={{
+                          branding: false,
+                          height: 300,
+                          menubar: false,
+                          plugins: [
+                            'advlist autolink lists link image charmap print preview anchor',
+                            'searchreplace visualblocks code fullscreen',
+                            'insertdatetime media table paste code help wordcount'
+                          ],
+                          toolbar:
+                            'undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help'
+                        }}
+                        onchange={handleEditorChange}
+                      />
+                    </>
                   </div>
                   <br></br>
                   <InputLabel>Select a faculty:</InputLabel>

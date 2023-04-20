@@ -12,7 +12,6 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import LinearProgress from '@mui/material/LinearProgress'
 import { getProjectDetails } from 'src/@core/utils/ajax/student/studentComments/project'
-import { deleteProject } from 'src/@core/utils/ajax/student/studentDashboard/projectdetails'
 
 interface MyObject {
   title: string
