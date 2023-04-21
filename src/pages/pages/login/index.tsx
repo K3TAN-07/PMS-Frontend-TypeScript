@@ -58,6 +58,7 @@ const LoginPage = () => {
     e.preventDefault()
     const result = await login({ email, password })
     const response = result
+    console.log(response)
     if (result.success === true) {
       toast.success('Login Successfull', {
         position: 'top-right',

@@ -91,6 +91,7 @@ const Requests = () => {
       })
       setShowRejectPopup(false)
       setInputValue('')
+      localStorage.setItem('projectRejected', true)
     } catch (error) {
       toast.error('Error ', {
         position: 'top-right',
@@ -131,6 +132,7 @@ const Requests = () => {
       })
       setShowPopup(false)
       setInputValue('')
+      localStorage.setItem('projectRejected', 'no')
     } catch (error) {
       toast.error('Error ', {
         position: 'top-right',
@@ -188,15 +190,14 @@ const Requests = () => {
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {requestData && requestData.length > 0 ? (
               requestData.map(request => (
-                <div key={request.projectId} className='mb-4'>
+                <div key={request.projectId}>
                   <Card
                     onClick={() => handleCardClick(request.projectId)}
                     style={{
-                      width: `${request.project.length * 35}px`,
-                      height: `${request.leaderName.length * 20}px`
+                      padding: '10px'
                     }}
                   >
-                    <div className='p-8'>
+                    <div className='p-2'>
                       <Typography>Project : {request.project}</Typography>
                       <Typography>Description : {request.description}</Typography>
                       <Typography>Database: {request.database}</Typography>

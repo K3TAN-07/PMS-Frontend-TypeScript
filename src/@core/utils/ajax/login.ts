@@ -23,6 +23,9 @@ export async function login({ email, password }: Props) {
       localStorage.setItem('email', json.email)
       localStorage.setItem('id', json.userId)
       localStorage.setItem('hhjklmno-hjsohjso-toKeN', 'login success')
+      localStorage.setItem('username', json.userId)
+      localStorage.setItem('projectRejected', json.rejected)
+      localStorage.setItem('projectId', json.projectId)
 
       return { success: true, message: json }
     } else {
